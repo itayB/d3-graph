@@ -43,7 +43,7 @@ class Graph {
             "image": "images/3.jpeg",
             "height": 40,
             "width": 40,
-            "adjacents": [1],
+            "adjacents": [0],
             "data": {
                 "name": "Number3",
                 "groupId": "Bla4",
@@ -66,24 +66,23 @@ class Graph {
         }];
     }
 
-    resetSize() {
+    normalizeNodesSize() {
         // var maxSize = 150;
         // var minSize = 30;
-        // var maxActivities = Math.max.apply(Math,nodes.map(function(o){return o.data.activities;}));
-        // var minActivities = Math.min.apply(Math,nodes.map(function(o){return o.data.activities;}));
+        // var maxActivities = Math.max.apply(Math,this.nodes.map(function(o){return o.data.activities;}));
+        // var minActivities = Math.min.apply(Math,this.nodes.map(function(o){return o.data.activities;}));
         //
-        // for (var i=0 ; i < nodes.length ; i++) {
-        //     var activities = nodes[i].data.activities;
+        // for (var i=0 ; i < this.nodes.length ; i++) {
+        //     var activities = this.nodes[i].data.activities;
         //     var size = Math.round(1.0 * (activities - minActivities) / (maxActivities - minActivities) * (maxSize - minSize) + minSize);
-        //     nodes[i].width = size;
-        //     nodes[i].height = size;
+        //     this.nodes[i].width = size;
+        //     this.nodes[i].height = size;
         // }
     }
 
     draw() {
-        this.resetSize();
+        this.normalizeNodesSize();
         $('#' + this.elementId).empty();
-
         var heightDelta = 100;
         var width = window.innerWidth;
         var height = window.innerHeight - heightDelta;
