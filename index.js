@@ -1,69 +1,8 @@
 class Graph {
     constructor(elementId) {
         this.elementId = elementId;
-
-        this.nodes = [{
-            "id": 0,
-            "image": "images/0.jpg",
-            "height": 40,
-            "width": 40,
-            "adjacents": [1, 2, 3],
-            "data": {
-                "name": "Number0",
-                "groupId": "Bla1",
-                "desc": "Desc1",
-                "leaderId": "123-123"
-            }
-        }, {
-            "id": 1,
-            "image": "images/1.jpeg",
-            "height": 100,
-            "width": 100,
-            "adjacents": [0],
-            "data": {
-                "name": "Number1",
-                "groupId": "Bla2",
-                "desc": "Desc1",
-                "leaderId": "123-123"
-            }
-        }, {
-            "id": 2,
-            "image": "images/2.png",
-            "height": 50,
-            "width": 50,
-            "adjacents": [0],
-            "data": {
-                "name": "Number2",
-                "groupId": "Bla3",
-                "desc": "Desc1",
-                "leaderId": "123-123"
-            }
-        }, {
-            "id": 3,
-            "image": "images/3.jpeg",
-            "height": 40,
-            "width": 40,
-            "adjacents": [0],
-            "data": {
-                "name": "Number3",
-                "groupId": "Bla4",
-                "desc": "Desc1",
-                "leaderId": "123-123"
-            }
-        }];
-        this.edges = [{
-            "source": 0,
-            "target": 1,
-            "width": 5
-        }, {
-            "source": 0,
-            "target": 2,
-            "width": 10
-        }, {
-            "source": 0,
-            "target": 3,
-            "width": 1
-        }];
+        this.nodes = [];
+        this.edges = [];
     }
 
     normalizeNodesSize() {
@@ -78,6 +17,14 @@ class Graph {
         //     this.nodes[i].width = size;
         //     this.nodes[i].height = size;
         // }
+    }
+
+    addNodes(nodes) {
+        this.nodes = nodes;
+    }
+
+    addEdges(edges) {
+        this.edges = edges;
     }
 
     draw() {
@@ -235,6 +182,19 @@ class Graph {
 
 }
 
+function getData() {
+    return $.ajax({
+        url: 'api/v1/data.json',
+        type: "GET",
+    });
+}
+
 var graph = new Graph('d3Graph');
-graph.draw();
+
+$.when(getData()).then(function(data) {
+    graph.addNodes(data.nodes);
+    graph.addEdges(data.edges);
+    graph.draw();
+});
+
 
