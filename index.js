@@ -1,12 +1,14 @@
 function Graph(elementId) {
-    var mNodes = [];
-    var mEdges = [];
+    var svg;
+    var simulation;
+    var mNodesData = [];
+    var mEdgesData = [];
+    var mNode = null;
+    var mLink = null;
     var elementId;
     var heightDelta = 100;
     var width = window.innerWidth;
     var height = window.innerHeight - heightDelta;
-    var svg;
-    var simulation;
 
     return {
         init: function () {
@@ -24,27 +26,27 @@ function Graph(elementId) {
             $('#' + this.elementId).empty();
         },
         getNodes: function () {
-            return mNodes;
+            return mNodesData;
         },
         getEdges: function () {
-            return mEdges;
+            return mEdgesData;
         },
         addNodes: function (nodes) {
-            mNodes = nodes;
+            mNodesData = mNodesData.concat(nodes);
         },
         addEdges: function (edges) {
-            mEdges = edges;
+            mEdgesData = mEdgesData.concat(edges);
         },
         draw: function () {
-            var links = svg.selectAll("foo")
-                .data(mEdges)
+            mLink = svg.selectAll("link")
+                .data(mEdgesData)
                 .enter()
                 .append("line")
                 .style("stroke", "#ccc")
                 .style("stroke-width", function (e) { return 1/* e.width*/ });
 
-            var node = svg.selectAll("foo")
-                .data(mNodes)
+            mNode = svg.selectAll("node")
+                .data(mNodesData)
                 .enter()
                 .append("g")
                 .call(d3.drag()
@@ -52,7 +54,7 @@ function Graph(elementId) {
                     .on("drag", dragged)
                     .on("end", dragended));
 
-            node.on('mouseover', function (d) {
+            mNode.on('mouseover', function (d) {
                 function removePopup() {
                     $("#nodePopup").remove();
                 }
@@ -87,40 +89,40 @@ function Graph(elementId) {
 
                 showPopup(d);
 
-                node.filter(function (d1) {
+                mNode.filter(function (d1) {
                     return (d !== d1 && d1.adjacents.indexOf(d.id) == -1);
                 }).select("image").style("opacity", 0.2);
-                node.filter(function (d1) {
+                mNode.filter(function (d1) {
                     return (d !== d1 && d1.adjacents.indexOf(d.id) == -1);
                 }).select("circle").style("stroke", "#f6f6f6");
-                links.filter(function (d1) {
+                mLink.filter(function (d1) {
                     return (d !== d1.source && d !== d1.target);
                 }).style("opacity", 0.2);
 
-                node.filter(function (d1) {
+                mNode.filter(function (d1) {
                     return (d == d1 || d1.adjacents.indexOf(d.id) !== -1);
                 }).select("image").style("opacity", 1);
-                node.filter(function (d1) {
+                mNode.filter(function (d1) {
                     return (d == d1 || d1.adjacents.indexOf(d.id) !== -1);
                 }).select("circle").style("stroke", "gray");
-                links.filter(function (d1) {
+                mLink.filter(function (d1) {
                     return (d == d1.source || d == d1.target);
                 }).style("opacity", 1);
             })
                 .on('mouseout', function () {
                     // removePopup();
-                    node.select("image").style("opacity", 1);
-                    node.select("circle").style("stroke", "gray");
-                    links.style("opacity", 1);
+                    mNode.select("image").style("opacity", 1);
+                    mNode.select("circle").style("stroke", "gray");
+                    mLink.style("opacity", 1);
                 });
 
-            var nodeCircle = node.append("circle")
+            var nodeCircle = mNode.append("circle")
                 .attr("r", function (d) { return 0.5 * Math.max(d.width, d.height) })
                 .attr("stroke", "gray")
                 .attr("stroke-width", "2px")
                 .attr("fill", "white");
 
-            var nodeImage = node.append("image")
+            var nodeImage = mNode.append("image")
                 .attr("xlink:href", function (d) { return d.image })
                 .attr("height", function (d) { return d.height + "" })
                 .attr("width", function (d) { return d.width + "" })
@@ -128,13 +130,13 @@ function Graph(elementId) {
                 .attr("y", function (d) {return -0.5 * d.height })
                 .attr("clip-path", function (d) { return "circle(" + (0.48 * Math.max(d.width, d.height)) + "px)"});
 
-            simulation.nodes(mNodes);
-            simulation
-                .force("link")
-                .links(mEdges);
+
+
+            simulation.nodes(mNodesData);
+            simulation.force("link").links(mEdgesData);
 
             simulation.on("tick", function() {
-                links.attr("x1", function(d) {
+                mLink.attr("x1", function(d) {
                     return d.source.x;
                 })
                     .attr("y1", function(d) {
@@ -147,8 +149,8 @@ function Graph(elementId) {
                         return d.target.y;
                     })
 
-                node.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"});
-                node.attr("cx", function(d) { return d.x = Math.max(d.width, Math.min(width - d.width, d.x)); })
+                mNode.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"});
+                mNode.attr("cx", function(d) { return d.x = Math.max(d.width, Math.min(width - d.width, d.x)); })
                     .attr("cy", function(d) { return d.y = Math.max(d.height, Math.min(height - heightDelta - d.height, d.y)); });
             });
 
@@ -186,6 +188,30 @@ $.when(getData()).then(function(data) {
     graph.addNodes(data.nodes);
     graph.addEdges(data.edges);
     graph.draw();
+
 });
 
+
+function add() {
+    graph.addNodes([{
+        "id": 4,
+        "image": "images/4.jpeg",
+        "height": 20,
+        "width": 20,
+        "adjacents": [0],
+        "data": {
+            "name": "Number4",
+            "groupId": "Bla4",
+            "desc": "Desc4",
+            "leaderId": "1234-1234"
+        }
+    }]);
+    graph.addEdges([{
+        "source": 4,
+        "target": 3,
+        "width": 1
+    }])
+    graph.draw();
+    // graph.draw();
+}
 
