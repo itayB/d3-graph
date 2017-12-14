@@ -18,7 +18,7 @@ function Graph(elementId) {
                 .attr("height", height);
 
             simulation = d3.forceSimulation()
-                .force("link", d3.forceLink())
+                .force(".edge", d3.forceLink())
                 .force("charge", d3.forceManyBody().strength(-600))
                 .force("center", d3.forceCenter(width / 2, height / 2));
         },
@@ -38,17 +38,22 @@ function Graph(elementId) {
             mEdgesData = mEdgesData.concat(edges);
         },
         draw: function () {
-            mLink = svg.selectAll("link")
+            mLink = svg.selectAll(".edge")
                 .data(mEdgesData)
                 .enter()
                 .append("line")
+                .attr("class", "edge")
                 .style("stroke", "#ccc")
-                .style("stroke-width", function (e) { return 1/* e.width*/ });
+                .style("stroke-width", function (e) {
+                    return 1
+                    /* e.width*/
+                });
 
-            mNode = svg.selectAll("node")
+            mNode = svg.selectAll(".node")
                 .data(mNodesData)
                 .enter()
                 .append("g")
+                .attr("class", "node")
                 .call(d3.drag()
                     .on("start", dragstarted)
                     .on("drag", dragged)
@@ -117,41 +122,60 @@ function Graph(elementId) {
                 });
 
             var nodeCircle = mNode.append("circle")
-                .attr("r", function (d) { return 0.5 * Math.max(d.width, d.height) })
+                .attr("r", function (d) {
+                    return 0.5 * Math.max(d.width, d.height)
+                })
                 .attr("stroke", "gray")
                 .attr("stroke-width", "2px")
                 .attr("fill", "white");
 
             var nodeImage = mNode.append("image")
-                .attr("xlink:href", function (d) { return d.image })
-                .attr("height", function (d) { return d.height + "" })
-                .attr("width", function (d) { return d.width + "" })
-                .attr("x", function (d) {return -0.5 * d.width })
-                .attr("y", function (d) {return -0.5 * d.height })
-                .attr("clip-path", function (d) { return "circle(" + (0.48 * Math.max(d.width, d.height)) + "px)"});
-
+                .attr("xlink:href", function (d) {
+                    return d.image
+                })
+                .attr("height", function (d) {
+                    return d.height + ""
+                })
+                .attr("width", function (d) {
+                    return d.width + ""
+                })
+                .attr("x", function (d) {
+                    return -0.5 * d.width
+                })
+                .attr("y", function (d) {
+                    return -0.5 * d.height
+                })
+                .attr("clip-path", function (d) {
+                    return "circle(" + (0.48 * Math.max(d.width, d.height)) + "px)"
+                });
 
 
             simulation.nodes(mNodesData);
-            simulation.force("link").links(mEdgesData);
+            simulation.force(".edge").links(mEdgesData);
 
-            simulation.on("tick", function() {
-                mLink.attr("x1", function(d) {
+            simulation.on("tick", function () {
+                mLink.attr("x1", function (d) {
                     return d.source.x;
                 })
-                    .attr("y1", function(d) {
+                    .attr("y1", function (d) {
                         return d.source.y;
                     })
-                    .attr("x2", function(d) {
+                    .attr("x2", function (d) {
                         return d.target.x;
                     })
-                    .attr("y2", function(d) {
+                    .attr("y2", function (d) {
                         return d.target.y;
                     })
 
-                mNode.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"});
-                mNode.attr("cx", function(d) { return d.x = Math.max(d.width, Math.min(width - d.width, d.x)); })
-                    .attr("cy", function(d) { return d.y = Math.max(d.height, Math.min(height - heightDelta - d.height, d.y)); });
+                mNode.attr("transform", function (d) {
+                    return "translate(" + d.x + "," + d.y + ")"
+                });
+                mNode.attr("cx", function (d) {
+                    return d.x = Math.max(d.width, Math.min(width - d.width, d.x));
+                })
+                    .attr("cy", function (d) {
+                        return d.y = Math.max(d.height, Math.min(height - heightDelta - d.height, d.y));
+                    });
             });
 
             function dragstarted(d) {
@@ -184,7 +208,7 @@ function getData() {
 var graph = Graph('d3Graph');
 graph.init();
 
-$.when(getData()).then(function(data) {
+$.when(getData()).then(function (data) {
     graph.addNodes(data.nodes);
     graph.addEdges(data.edges);
     graph.draw();
