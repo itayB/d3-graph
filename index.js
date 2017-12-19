@@ -48,6 +48,12 @@
             addEdges: function (edges) {
                 mEdgesData = mEdgesData.concat(edges);
             },
+            onMouseOut: function () {
+                // removePopup();
+                mNode.select("image").style("opacity", 1);
+                mNode.select("circle").style("stroke", "gray");
+                mLink.style("opacity", 1).style("stroke", "#ccc");
+            },
             draw: function () {
                 mLink = svg.selectAll(".edge")
                     .data(mEdgesData)
@@ -126,42 +132,31 @@
                         return (d == d1.source || d == d1.target);
                     }).style("opacity", 1);
                 })
-                    .on('mouseout', function () {
-                        // removePopup();
-                        mNode.select("image").style("opacity", 1);
-                        mNode.select("circle").style("stroke", "gray");
-                        mLink.style("opacity", 1).style("stroke", "#ccc");
-                    });
+                    .on('mouseout', this.onMouseOut);
 
-                mLink.on('mouseover', function (d) {
-                    console.log(d);
-                    mLink.filter(function (d1) {
-                        return (d == d1);
+                mLink.on('mouseover', function (currentLink) {
+                    mLink.filter(function (otherLink) {
+                        return (currentLink == otherLink);
                     }).style("stroke", "black");
-                    mLink.filter(function (d1) {
-                        return (d !== d1);
+                    mLink.filter(function (otherLink) {
+                        return (currentLink !== otherLink);
                     }).style("opacity", 0.2);
 
-                    mNode.filter(function (d1) {
-                        return (d !== d1 && d1.adjacents.indexOf(d.id) == -1);
+                    mNode.filter(function (otherNode) {
+                        return (currentLink.source != otherNode || currentLink.target != otherNode);
                     }).select("image").style("opacity", 0.2);
-                    mNode.filter(function (d1) {
-                        return (d !== d1 && d1.adjacents.indexOf(d.id) == -1);
+                    mNode.filter(function (otherNode) {
+                        return (currentLink.source != otherNode || currentLink.target != otherNode);
                     }).select("circle").style("stroke", "#f6f6f6");
 
                     mNode.filter(function (d1) {
-                        return (d1 == d.source || d1 == d.target);
+                        return (d1 == currentLink.source || d1 == currentLink.target);
                     }).select("image").style("opacity", 1);
                     mNode.filter(function (d1) {
-                        return (d1 == d.source || d1 == d.target);
+                        return (d1 == currentLink.source || d1 == currentLink.target);
                     }).select("circle").style("stroke", "gray");
 
-                }).on('mouseout', function () {
-                    // removePopup();
-                    mNode.select("image").style("opacity", 1);
-                    mNode.select("circle").style("stroke", "gray");
-                    mLink.style("opacity", 1).style("stroke", "#ccc");
-                });;
+                }).on('mouseout', this.onMouseOut);
 
                 var nodeCircle = mNode.append("circle")
                     .attr("r", function (d) {
