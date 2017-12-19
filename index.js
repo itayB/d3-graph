@@ -58,7 +58,7 @@
                     .style("stroke-width", function (e) {
                         return 1
                         /* e.width*/
-                    }).merge(mLink);
+                    }).merge(mLink).lower();
 
                 mNode = svg.selectAll(".node")
                     .data(mNodesData)
@@ -248,6 +248,5 @@
             "width": 1
         }])
         graph.draw();
-        // graph.draw();
     }
 
