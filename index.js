@@ -270,7 +270,10 @@ function add() {
     graph.addEdges([{
         "source": 4,
         "target": 3,
-        "width": 1
+        "width": 1,
+        "data": {
+            "counter": 500
+        }
     }])
     graph.draw();
 }

@@ -51,14 +51,23 @@
   "edges": [{
     "source": 0,
     "target": 1,
-    "width": 5
+    "width": 5,
+    "data": {
+      "counter": 500
+    }
   }, {
     "source": 0,
     "target": 2,
-    "width": 10
+    "width": 10,
+    "data": {
+      "counter": 500
+    }
   }, {
     "source": 0,
     "target": 3,
-    "width": 1
+    "width": 1,
+    "data": {
+      "counter": 500
+    }
   }]
 }
