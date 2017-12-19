@@ -56,7 +56,7 @@
                     .attr("class", "edge")
                     .style("stroke", "#ccc")
                     .style("stroke-width", function (e) {
-                        return 1
+                        return 2
                         /* e.width*/
                     }).merge(mLink).lower();
 
@@ -130,8 +130,38 @@
                         // removePopup();
                         mNode.select("image").style("opacity", 1);
                         mNode.select("circle").style("stroke", "gray");
-                        mLink.style("opacity", 1);
+                        mLink.style("opacity", 1).style("stroke", "#ccc");
                     });
+
+                mLink.on('mouseover', function (d) {
+                    console.log(d);
+                    mLink.filter(function (d1) {
+                        return (d == d1);
+                    }).style("stroke", "black");
+                    mLink.filter(function (d1) {
+                        return (d !== d1);
+                    }).style("opacity", 0.2);
+
+                    mNode.filter(function (d1) {
+                        return (d !== d1 && d1.adjacents.indexOf(d.id) == -1);
+                    }).select("image").style("opacity", 0.2);
+                    mNode.filter(function (d1) {
+                        return (d !== d1 && d1.adjacents.indexOf(d.id) == -1);
+                    }).select("circle").style("stroke", "#f6f6f6");
+
+                    mNode.filter(function (d1) {
+                        return (d1 == d.source || d1 == d.target);
+                    }).select("image").style("opacity", 1);
+                    mNode.filter(function (d1) {
+                        return (d1 == d.source || d1 == d.target);
+                    }).select("circle").style("stroke", "gray");
+
+                }).on('mouseout', function () {
+                    // removePopup();
+                    mNode.select("image").style("opacity", 1);
+                    mNode.select("circle").style("stroke", "gray");
+                    mLink.style("opacity", 1).style("stroke", "#ccc");
+                });;
 
                 var nodeCircle = mNode.append("circle")
                     .attr("r", function (d) {
