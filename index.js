@@ -30,6 +30,11 @@ function showNodePopup(node) {
     $("#nodePopupCloseButton").click(removeNodePopup);
 }
 
+const LINK_DEFAULT_COLOR = "#ccc";
+const NODE_DEFAULT_COLOR = "gray";
+const DEFAULT_OPACITY = 1;
+const BACKGROUND_OPACITY = 0.2;
+
 function Graph(elementId) {
     var svg;
     var simulation;
@@ -56,7 +61,7 @@ function Graph(elementId) {
 
             mLink = svg.selectAll(".edge")
                 .attr("class", "edge")
-                // .style("stroke", "#ccc")
+                .style("stroke", LINK_DEFAULT_COLOR)
                 .style("stroke-width", function (e) {
                     return 1
                     /* e.width*/
@@ -82,9 +87,9 @@ function Graph(elementId) {
         },
         onMouseOut: function () {
             // removePopup();
-            mNode.select("image").style("opacity", 1);
-            mNode.select("circle").style("stroke", "gray");
-            mLink.style("opacity", 1).style("stroke", "#ccc");
+            mNode.select("image").style("opacity", DEFAULT_OPACITY);
+            mNode.select("circle").style("stroke", NODE_DEFAULT_COLOR);
+            mLink.style("opacity", DEFAULT_OPACITY).style("stroke", LINK_DEFAULT_COLOR);
         },
         draw: function () {
             mLink = svg.selectAll(".edge")
@@ -92,7 +97,7 @@ function Graph(elementId) {
                 .enter()
                 .append("line")
                 .attr("class", "edge")
-                // .style("stroke", "#ccc")
+                .style("stroke", LINK_DEFAULT_COLOR)
                 .style("stroke-width", function (e) {
                     return 2
                     /* e.width*/
@@ -114,23 +119,23 @@ function Graph(elementId) {
 
                 mNode.filter(function (d1) {
                     return (d !== d1 && d1.adjacents.indexOf(d.id) == -1);
-                }).select("image").style("opacity", 0.2);
+                }).select("image").style("opacity", BACKGROUND_OPACITY);
                 mNode.filter(function (d1) {
                     return (d !== d1 && d1.adjacents.indexOf(d.id) == -1);
                 }).select("circle").style("stroke", "#f6f6f6");
                 mLink.filter(function (d1) {
                     return (d !== d1.source && d !== d1.target);
-                }).style("opacity", 0.2);
+                }).style("opacity", BACKGROUND_OPACITY);
 
                 mNode.filter(function (d1) {
                     return (d == d1 || d1.adjacents.indexOf(d.id) !== -1);
-                }).select("image").style("opacity", 1);
+                }).select("image").style("opacity", DEFAULT_OPACITY);
                 mNode.filter(function (d1) {
                     return (d == d1 || d1.adjacents.indexOf(d.id) !== -1);
-                }).select("circle").style("stroke", "gray");
+                }).select("circle").style("stroke", NODE_DEFAULT_COLOR);
                 mLink.filter(function (d1) {
                     return (d == d1.source || d == d1.target);
-                }).style("opacity", 1);
+                }).style("opacity", DEFAULT_OPACITY);
             })
                 .on('mouseout', this.onMouseOut);
 
@@ -140,21 +145,21 @@ function Graph(elementId) {
                 }).style("stroke", "black");
                 mLink.filter(function (otherLink) {
                     return (currentLink !== otherLink);
-                }).style("opacity", 0.2);
+                }).style("opacity", BACKGROUND_OPACITY);
 
                 mNode.filter(function (otherNode) {
                     return (currentLink.source != otherNode || currentLink.target != otherNode);
-                }).select("image").style("opacity", 0.2);
+                }).select("image").style("opacity", BACKGROUND_OPACITY);
                 mNode.filter(function (otherNode) {
                     return (currentLink.source != otherNode || currentLink.target != otherNode);
                 }).select("circle").style("stroke", "#f6f6f6");
 
                 mNode.filter(function (d1) {
                     return (d1 == currentLink.source || d1 == currentLink.target);
-                }).select("image").style("opacity", 1);
+                }).select("image").style("opacity", DEFAULT_OPACITY);
                 mNode.filter(function (d1) {
                     return (d1 == currentLink.source || d1 == currentLink.target);
-                }).select("circle").style("stroke", "gray");
+                }).select("circle").style("stroke", NODE_DEFAULT_COLOR);
 
             }).on('mouseout', this.onMouseOut);
 
@@ -162,7 +167,7 @@ function Graph(elementId) {
                 .attr("r", function (d) {
                     return 0.5 * Math.max(d.width, d.height)
                 })
-                .attr("stroke", "gray")
+                .attr("stroke", NODE_DEFAULT_COLOR)
                 .attr("stroke-width", "2px")
                 .attr("fill", "white");
 
