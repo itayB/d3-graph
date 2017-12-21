@@ -123,24 +123,35 @@ function Graph(elementId) {
                     return d.source.id === thisNodeID ? d.target.id : d.source.id
                 });
 
-                mNode.filter(function(otherNode) {
-                    return connectedNodes.indexOf(otherNode.id) == -1
-                }).select("image").style("opacity", BACKGROUND_OPACITY);
+                mNode.each(function (otherNode, id) {
+                    var image = d3.select(this).select("image");
+                    var circle = d3.select(this).select("circle");
+                    if (connectedNodes.indexOf(otherNode.id) > -1 || thisNodeID == otherNode.id) {
+                        image.style("opacity", DEFAULT_OPACITY);
+                        circle.style("stroke", NODE_DEFAULT_COLOR);
+                    }
+                    else {
+                        image.style("opacity", BACKGROUND_OPACITY);
+                        circle.style("stroke", "#f6f6f6");
+                    }
+                });
 
-                mNode.filter(function (otherNode) {
-                    return connectedNodes.indexOf(otherNode.id) == -1;
-                }).select("circle").style("stroke", "#f6f6f6");
+                // var filteredNodes = mNode.filter(function(otherNode) {
+                //     return connectedNodes.indexOf(otherNode.id) == -1
+                // });
+                //
+                // filteredNodes.select("image").style("opacity", BACKGROUND_OPACITY);
+                // filteredNodes.select("circle").style("stroke", "#f6f6f6");
+                //
+                // var unfilterdNode = mNode.filter(function (otherNode) {
+                //     return connectedNodes.indexOf(otherNode.id) > -1 || thisNodeID == otherNode.id;
+                // });
+                // unfilterdNode.select("image").style("opacity", DEFAULT_OPACITY);
+                // unfilterdNode.select("circle").style("stroke", NODE_DEFAULT_COLOR);
 
                 mLink.filter(function (otherLink) {
                     return (thisNode !== otherLink.source && thisNode !== otherLink.target);
                 }).style("opacity", BACKGROUND_OPACITY);
-
-                mNode.filter(function (otherNode) {
-                    return connectedNodes.indexOf(otherNode.id) > -1 || thisNodeID == otherNode.id;
-                }).select("image").style("opacity", DEFAULT_OPACITY);
-                mNode.filter(function (otherNode) {
-                    return connectedNodes.indexOf(otherNode.id) > -1 || thisNodeID == otherNode.id;
-                }).select("circle").style("stroke", NODE_DEFAULT_COLOR);
 
                 mLink.filter(function (otherLink) {
                     return (thisNode == otherLink.source || thisNode == otherLink.target);
