@@ -114,27 +114,36 @@ function Graph(elementId) {
                     .on("drag", dragged)
                     .on("end", dragended));
 
-            mNode.on('mouseover', function (d) {
-                showNodePopup(d);
+            mNode.on('mouseover', function (thisNode) {
+                showNodePopup(thisNode);
+                var thisNodeID = thisNode.id;
+                var connectedNodes = mEdgesData.filter(function(d) {
+                    return d.source.id === thisNodeID || d.target.id === thisNodeID
+                }).map(function(d) {
+                    return d.source.id === thisNodeID ? d.target.id : d.source.id
+                });
 
-                mNode.filter(function (d1) {
-                    return (d !== d1 && d1.adjacents.indexOf(d.id) == -1);
+                mNode.filter(function(otherNode) {
+                    return connectedNodes.indexOf(otherNode.id) == -1
                 }).select("image").style("opacity", BACKGROUND_OPACITY);
-                mNode.filter(function (d1) {
-                    return (d !== d1 && d1.adjacents.indexOf(d.id) == -1);
+
+                mNode.filter(function (otherNode) {
+                    return connectedNodes.indexOf(otherNode.id) == -1;
                 }).select("circle").style("stroke", "#f6f6f6");
-                mLink.filter(function (d1) {
-                    return (d !== d1.source && d !== d1.target);
+
+                mLink.filter(function (otherLink) {
+                    return (thisNode !== otherLink.source && thisNode !== otherLink.target);
                 }).style("opacity", BACKGROUND_OPACITY);
 
-                mNode.filter(function (d1) {
-                    return (d == d1 || d1.adjacents.indexOf(d.id) !== -1);
+                mNode.filter(function (otherNode) {
+                    return connectedNodes.indexOf(otherNode.id) > -1 || thisNodeID == otherNode.id;
                 }).select("image").style("opacity", DEFAULT_OPACITY);
-                mNode.filter(function (d1) {
-                    return (d == d1 || d1.adjacents.indexOf(d.id) !== -1);
+                mNode.filter(function (otherNode) {
+                    return connectedNodes.indexOf(otherNode.id) > -1 || thisNodeID == otherNode.id;
                 }).select("circle").style("stroke", NODE_DEFAULT_COLOR);
-                mLink.filter(function (d1) {
-                    return (d == d1.source || d == d1.target);
+
+                mLink.filter(function (otherLink) {
+                    return (thisNode == otherLink.source || thisNode == otherLink.target);
                 }).style("opacity", DEFAULT_OPACITY);
             })
                 .on('mouseout', this.onMouseOut);
@@ -264,7 +273,6 @@ function add() {
         "image": "images/4.jpg",
         "height": 20,
         "width": 20,
-        "adjacents": [0],
         "data": {
             "name": "Number4",
             "groupId": "Bla4",
