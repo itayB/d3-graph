@@ -174,7 +174,12 @@ function Graph(elementId) {
                 .attr("r", function (d) {
                     return 0.5 * Math.max(d.width, d.height)
                 })
-                .attr("stroke", NODE_DEFAULT_COLOR)
+                .attr("stroke", function (node) {
+                    if (node.color) {
+                        return node.color;
+                    }
+                    return NODE_DEFAULT_COLOR;
+                })
                 .attr("stroke-width", "2px")
                 .attr("fill", "white");
 
