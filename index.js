@@ -103,11 +103,13 @@ function Graph(elementId) {
                     /* e.width*/
                 }).merge(mLink).lower();
 
-            mNode = svg.selectAll(".node")
+            var newNodes = svg.selectAll(".node")
                 .data(mNodesData)
                 .enter()
                 .append("g")
-                .attr("class", "node").merge(mNode);
+                .attr("class", "node");
+
+            mNode = newNodes.merge(mNode);
 
             mNode.call(d3.drag()
                 .on("start", dragstarted)
@@ -170,7 +172,7 @@ function Graph(elementId) {
 
             }).on('mouseout', this.onMouseOut);
 
-            var nodeCircle = mNode.append("circle")
+            var nodeCircle = newNodes.append("circle")
                 .attr("r", function (d) {
                     return 0.5 * Math.max(d.width, d.height)
                 })
@@ -183,7 +185,7 @@ function Graph(elementId) {
                 .attr("stroke-width", "2px")
                 .attr("fill", "white");
 
-            var nodeImage = mNode.append("image")
+            var nodeImage = newNodes.append("image")
                 .attr("xlink:href", function (d) {
                     return d.image
                 })
