@@ -88,7 +88,7 @@ function Graph(elementId) {
         onMouseOut: function () {
             // removePopup();
             mNode.select("image").style("opacity", DEFAULT_OPACITY);
-            mNode.select("circle").style("stroke", NODE_DEFAULT_COLOR);
+            mNode.select("circle").style("opacity", DEFAULT_OPACITY);
             mLink.style("opacity", DEFAULT_OPACITY).style("stroke", LINK_DEFAULT_COLOR);
         },
         draw: function () {
@@ -128,26 +128,13 @@ function Graph(elementId) {
                     var circle = d3.select(this).select("circle");
                     if (connectedNodes.indexOf(otherNode.id) > -1 || thisNodeID == otherNode.id) {
                         image.style("opacity", DEFAULT_OPACITY);
-                        circle.style("stroke", NODE_DEFAULT_COLOR);
+                        circle.style("opacity", DEFAULT_OPACITY);
                     }
                     else {
                         image.style("opacity", BACKGROUND_OPACITY);
-                        circle.style("stroke", "#f6f6f6");
+                        circle.style("opacity", BACKGROUND_OPACITY);
                     }
                 });
-
-                // var filteredNodes = mNode.filter(function(otherNode) {
-                //     return connectedNodes.indexOf(otherNode.id) == -1
-                // });
-                //
-                // filteredNodes.select("image").style("opacity", BACKGROUND_OPACITY);
-                // filteredNodes.select("circle").style("stroke", "#f6f6f6");
-                //
-                // var unfilterdNode = mNode.filter(function (otherNode) {
-                //     return connectedNodes.indexOf(otherNode.id) > -1 || thisNodeID == otherNode.id;
-                // });
-                // unfilterdNode.select("image").style("opacity", DEFAULT_OPACITY);
-                // unfilterdNode.select("circle").style("stroke", NODE_DEFAULT_COLOR);
 
                 mLink.filter(function (otherLink) {
                     return (thisNode !== otherLink.source && thisNode !== otherLink.target);
@@ -172,14 +159,14 @@ function Graph(elementId) {
                 }).select("image").style("opacity", BACKGROUND_OPACITY);
                 mNode.filter(function (otherNode) {
                     return (currentLink.source != otherNode || currentLink.target != otherNode);
-                }).select("circle").style("stroke", "#f6f6f6");
+                }).select("circle").style("opacity", BACKGROUND_OPACITY);
 
                 mNode.filter(function (d1) {
                     return (d1 == currentLink.source || d1 == currentLink.target);
                 }).select("image").style("opacity", DEFAULT_OPACITY);
                 mNode.filter(function (d1) {
                     return (d1 == currentLink.source || d1 == currentLink.target);
-                }).select("circle").style("stroke", NODE_DEFAULT_COLOR);
+                }).select("circle").style("opacity", DEFAULT_OPACITY);
 
             }).on('mouseout', this.onMouseOut);
 
